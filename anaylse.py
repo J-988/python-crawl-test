@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import pandas as pd
 import numpy as np
@@ -12,36 +7,27 @@ from mpl_finance import candlestick_ohlc
 from matplotlib.dates import DateFormatter, WeekdayLocator, DayLocator, MONDAY,date2num
 
 
-# In[2]:
-
-
 def get_data(code):
-    names=['date','code','name','close','high','low','open','yestclose','zd','zdf','volume','turnover']
-    hispath='D:/py/historydata/'+code+'.csv'
-    recentpath='D:/py/stockdata/'+code+'real.csv'
-    history = pd.read_csv(hispath,header=0,encoding='gbk',names=names,nrows=30) #first 30 减少数据读取时间和内存占用
-    recent = pd.read_csv(recentpath,header=None,encoding='gbk',names=names)
+    names = ['date','code','name','close','high','low','open','yestclose','zd','zdf','volume','turnover']
+    hispath = 'D:/py/historydata/'+code+'.csv'
+    recentpath = 'D:/py/stockdata/'+code+'real.csv'
+    history = pd.read_csv(hispath, header=0, encoding='gbk', names=names, nrows=30) #first 30 减少数据读取时间和内存占用
+    recent = pd.read_csv(recentpath, header=None, encoding='gbk', names=names)
     #history.head()
-    recent=recent.iloc[::-1]  #recent用a写入新行在旧数据下，需要倒转
+    recent = recent.iloc[::-1]  #recent用a写入新行在旧数据下，需要倒转
     #print(recent)
-    df=pd.concat([recent,history])  #合并历史数据和每天定时爬的近期数据
+    df = pd.concat([recent,history])  #合并历史数据和每天定时爬的近期数据
     #df.head()
     df['date']=pd.to_datetime(df['date']) #将str日期转化为date日期
     #print(df['close'])
-    df=df.set_index('date') #设置date为索引
+    df = df.set_index('date') #设置date为索引
     return df
-
-
-# In[3]:
 
 
 def drawstock(df):    
     df[['close','volume']].plot(secondary_y='volume',grid=True)
     plt.title('close and volume', fontsize='9')
     plt.show()
-
-
-# In[4]:
 
 
 def pandas_candlestick_ohlc(stock_data, otherseries=None):
@@ -78,16 +64,10 @@ def pandas_candlestick_ohlc(stock_data, otherseries=None):
     plt.show()
 
 
-# In[5]:
-
-
 def MA(df):
     df['close_mean5']=np.round(df['close'].rolling(window=5,center=False).mean(),2)
     df['close_mean20']=np.round(df['close'].rolling(window=20,center=False).mean(),2)
     pandas_candlestick_ohlc(df,['close_mean5','close_mean20'])
-
-
-# In[6]:
 
 
 if __name__ == '__main__':  
